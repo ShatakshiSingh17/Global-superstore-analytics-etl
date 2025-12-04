@@ -23,13 +23,49 @@ retail_analytics_etl/
 - **Architecture**: Star Schema (Fact/Dimension Modeling)
 
 ## 📊 Data Model
-The project transforms raw flat-file data into a Star Schema optimized for analytics:
-- **Fact Table**: `fact_sales` (Transactions)
-- **Dimension Tables**: 
-    - `dim_customer`
-    - `dim_product`
-    - `dim_location`
-    - `dim_date`
+The project transforms raw flat-file data into a Star Schema optimized for analytics.
+
+```mermaid
+erDiagram
+    FACT_SALES {
+        string order_id
+        int customer_id FK
+        int product_id FK
+        int location_id FK
+        date order_date FK
+        float sales
+        float profit
+        int quantity
+    }
+    DIM_CUSTOMER {
+        int customer_id PK
+        string customer_name
+        string segment
+    }
+    DIM_PRODUCT {
+        int product_id PK
+        string product_name
+        string category
+        string sub_category
+    }
+    DIM_LOCATION {
+        int location_id PK
+        string city
+        string state
+        string region
+    }
+    DIM_DATE {
+        date date PK
+        int year
+        int month
+        string day_of_week
+    }
+
+    FACT_SALES }|..|| DIM_CUSTOMER : has
+    FACT_SALES }|..|| DIM_PRODUCT : sells
+    FACT_SALES }|..|| DIM_LOCATION : delivered_to
+    FACT_SALES }|..|| DIM_DATE : ordered_on
+```
 
 ## 🛠️ How to Run
 1. **Setup Environment**:
@@ -48,7 +84,23 @@ The project transforms raw flat-file data into a Star Schema optimized for analy
 ## 📈 Dashboarding
 Refer to [docs/dashboard_guide.md](docs/dashboard_guide.md) for instructions on building the Power BI/Tableau dashboard using the processed data.
 
-## 💡 Key Insights (Sample)
-- **Revenue Growth**: Analysis of MoM and YoY trends.
-- **Profitability**: Identification of high-margin products and loss-making sub-categories.
-- **Regional Performance**: Breakdown of sales efficiency by region.
+## 💡 Key Insights & Analysis Results
+
+### 1. Regional Performance
+The **West** region is the top performer in both Sales and Profit.
+
+| Region | Total Sales | Total Profit | Profit Margin % |
+| :--- | :--- | :--- | :--- |
+| West | $725,457 | $108,418 | 14.94% |
+| East | $678,781 | $91,522 | 13.48% |
+| South | $391,721 | $46,749 | 11.93% |
+| Central | $501,239 | $39,706 | 7.92% |
+
+### 2. Top Customers (RFM Analysis)
+We identified high-value customers based on total spend (Monetary value).
+
+| Customer Name | Segment | Total Spend | Frequency |
+| :--- | :--- | :--- | :--- |
+| Sean Miller | Home Office | $25,043 | 5 |
+| Tamara Chand | Corporate | $19,052 | 5 |
+| Raymond Buch | Consumer | $15,117 | 6 |
