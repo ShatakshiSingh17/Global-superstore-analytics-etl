@@ -54,10 +54,10 @@ erDiagram
         int month
     }
 
-    FACT_SALES }|..|| DIM_CUSTOMER : has
-    FACT_SALES }|..|| DIM_PRODUCT : sells
-    FACT_SALES }|..|| DIM_LOCATION : to
-    FACT_SALES }|..|| DIM_DATE : on
+    FACT_SALES }|..|| DIM_CUSTOMER : "has"
+    FACT_SALES }|..|| DIM_PRODUCT : "sells"
+    FACT_SALES }|..|| DIM_LOCATION : "delivered_to"
+    FACT_SALES }|..|| DIM_DATE : "ordered_on"
 ```
 
 ## Running it
