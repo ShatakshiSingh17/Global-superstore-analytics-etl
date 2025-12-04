@@ -1,36 +1,30 @@
 import os
 from extract import extract_data
 from transform_clean import clean_data
-from transform_model import create_dimension_tables, create_fact_table
-from load import load_data
+from transform_model import build_dims, build_fact
+from load import save_data
 
 def main():
-    # Configuration
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    RAW_PATH = os.path.join(BASE_DIR, "data/raw/Superstore.csv")
-    ANALYTICS_DIR = os.path.join(BASE_DIR, "data/analytics")
-    DB_PATH = os.path.join(BASE_DIR, "data/analytics/retail_db.sqlite")
+    # setup paths
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    raw_path = os.path.join(base_dir, "data/raw/Superstore.csv")
+    out_dir = os.path.join(base_dir, "data/analytics")
+    db_path = os.path.join(out_dir, "retail_db.sqlite")
     
-    # 1. Extract
+    # run pipeline
     try:
-        df_raw = extract_data(RAW_PATH)
+        df = extract_data(raw_path)
+        df = clean_data(df)
+        
+        dims = build_dims(df)
+        fact = build_fact(df, dims)
+        
+        save_data(dims, fact, out_dir, db_path)
+        
+        print("\nSuccess! Data is ready.")
+        
     except Exception as e:
-        print(f"Extraction failed: {e}")
-        return
-
-    # 2. Transform (Clean)
-    df_clean = clean_data(df_raw)
-    
-    # 3. Transform (Model)
-    dims = create_dimension_tables(df_clean)
-    fact = create_fact_table(df_clean, dims)
-    
-    # 4. Load
-    load_data(dims, fact, ANALYTICS_DIR, DB_PATH)
-    
-    print("\nETL Pipeline finished successfully!")
-    print(f"Analytics data available in: {ANALYTICS_DIR}")
-    print(f"SQLite Database: {DB_PATH}")
+        print(f"Pipeline failed: {e}")
 
 if __name__ == "__main__":
     main()

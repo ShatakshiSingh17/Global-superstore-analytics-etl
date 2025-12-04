@@ -1,29 +1,27 @@
-# Retail Analytics & ETL Automation Project
+# Retail Analytics ETL
 
-A complete end-to-end data engineering and analytics project using the Global Superstore dataset. This project demonstrates a full ETL pipeline, data modeling (Star Schema), and business intelligence capabilities.
+End-to-end ETL pipeline and analytics for the Global Superstore dataset. Built with Python (Pandas) and SQLite.
 
-## 📂 Project Structure
-```
-retail_analytics_etl/
-├── data/
-│   ├── raw/            # Original dataset
-│   └── analytics/      # Processed Star Schema (CSV, Parquet, SQLite)
-├── scripts/            # Python ETL Scripts
-│   ├── extract.py      # Data ingestion
-│   ├── transform*.py   # Cleaning & Modeling
-│   └── load.py         # Data loading
-├── sql/                # SQL Analysis
-└── docs/               # Documentation
-```
+## Overview
 
-## 🚀 Tech Stack
-- **Python**: Pandas, NumPy (Data Processing)
-- **SQL**: SQLite (Data Warehousing & Analysis)
-- **Data Formats**: CSV, Parquet
-- **Architecture**: Star Schema (Fact/Dimension Modeling)
+Takes raw sales data, cleans it, builds a Star Schema (Facts/Dims), and loads it into a local SQLite DB for analysis.
 
-## 📊 Data Model
-The project transforms raw flat-file data into a Star Schema optimized for analytics.
+**Stack:** Python, Pandas, SQLite, Parquet.
+
+## Files
+
+- `data/`: Raw csv and processed parquet/db files.
+- `scripts/`:
+    - `extract.py`: Loads the csv.
+    - `transform_clean.py`: Fixes types, column names, etc.
+    - `transform_model.py`: Builds the Star Schema.
+    - `load.py`: Saves everything.
+    - `main.py`: Runs the whole flow.
+- `sql/`: Analysis queries.
+
+## Data Model
+
+Simple Star Schema:
 
 ```mermaid
 erDiagram
@@ -35,72 +33,59 @@ erDiagram
         date order_date FK
         float sales
         float profit
-        int quantity
     }
     DIM_CUSTOMER {
         int customer_id PK
-        string customer_name
+        string name
         string segment
     }
     DIM_PRODUCT {
         int product_id PK
-        string product_name
+        string name
         string category
-        string sub_category
     }
     DIM_LOCATION {
         int location_id PK
-        string city
-        string state
         string region
     }
     DIM_DATE {
         date date PK
         int year
         int month
-        string day_of_week
     }
 
     FACT_SALES }|..|| DIM_CUSTOMER : has
     FACT_SALES }|..|| DIM_PRODUCT : sells
-    FACT_SALES }|..|| DIM_LOCATION : delivered_to
-    FACT_SALES }|..|| DIM_DATE : ordered_on
+    FACT_SALES }|..|| DIM_LOCATION : to
+    FACT_SALES }|..|| DIM_DATE : on
 ```
 
-## 🛠️ How to Run
-1. **Setup Environment**:
-   ```bash
-   pip install pandas pyarrow fastparquet openpyxl
-   ```
-2. **Run ETL Pipeline**:
-   ```bash
-   python scripts/main.py
-   ```
-   *This will process the raw data and generate the analytics-ready files in `data/analytics/`.*
+## Running it
 
-3. **Run SQL Analysis**:
-   Use any SQLite client to query `data/analytics/retail_db.sqlite` or run the provided queries in `sql/kpi_analysis.sql`.
+1.  **Install deps**:
+    ```bash
+    pip install pandas pyarrow fastparquet openpyxl
+    ```
 
-## 📈 Dashboarding
-Refer to [docs/dashboard_guide.md](docs/dashboard_guide.md) for instructions on building the Power BI/Tableau dashboard using the processed data.
+2.  **Run ETL**:
+    ```bash
+    python scripts/main.py
+    ```
+    Check `data/analytics/` for the output.
 
-## 💡 Key Insights & Analysis Results
+3.  **Analyze**:
+    Run the queries in `sql/kpi_analysis.sql` against `data/analytics/retail_db.sqlite`.
 
-### 1. Regional Performance
-The **West** region is the top performer in both Sales and Profit.
+## Analysis Results
 
-| Region | Total Sales | Total Profit | Profit Margin % |
+**Regional Stats:**
+
+| Region | Sales | Profit | Margin |
 | :--- | :--- | :--- | :--- |
-| West | $725,457 | $108,418 | 14.94% |
-| East | $678,781 | $91,522 | 13.48% |
-| South | $391,721 | $46,749 | 11.93% |
-| Central | $501,239 | $39,706 | 7.92% |
+| West | $725k | $108k | 14.9% |
+| East | $678k | $91k | 13.5% |
+| South | $391k | $46k | 11.9% |
+| Central | $501k | $39k | 7.9% |
 
-### 2. Top Customers (RFM Analysis)
-We identified high-value customers based on total spend (Monetary value).
-
-| Customer Name | Segment | Total Spend | Frequency |
-| :--- | :--- | :--- | :--- |
-| Sean Miller | Home Office | $25,043 | 5 |
-| Tamara Chand | Corporate | $19,052 | 5 |
-| Raymond Buch | Consumer | $15,117 | 6 |
+**Top Customers:**
+Sean Miller ($25k), Tamara Chand ($19k), Raymond Buch ($15k).

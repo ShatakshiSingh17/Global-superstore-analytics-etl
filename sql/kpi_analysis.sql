@@ -1,71 +1,59 @@
--- KPI Analysis Queries for Retail Analytics
--- Run these against the retail_db.sqlite database
+-- Retail Analytics Queries
 
--- 1. Total Revenue, Profit, and Quantity
+-- 1. High-level metrics
 SELECT 
-    SUM(sales) as total_revenue,
-    SUM(profit) as total_profit,
-    SUM(quantity) as total_quantity_sold,
-    COUNT(DISTINCT order_id) as total_orders
+    SUM(sales) as revenue,
+    SUM(profit) as profit,
+    SUM(quantity) as units_sold,
+    COUNT(DISTINCT order_id) as orders
 FROM fact_sales;
 
--- 2. Monthly Revenue Growth (MoM)
-WITH monthly_sales AS (
+-- 2. MoM Growth
+WITH monthly AS (
     SELECT 
-        d.year,
-        d.month,
+        d.year, d.month,
         SUM(f.sales) as revenue
     FROM fact_sales f
     JOIN dim_date d ON f.order_date = d.date
     GROUP BY 1, 2
-),
-lagged_sales AS (
-    SELECT 
-        *,
-        LAG(revenue) OVER (ORDER BY year, month) as prev_month_revenue
-    FROM monthly_sales
 )
 SELECT 
-    year,
-    month,
-    revenue,
-    prev_month_revenue,
-    ROUND((revenue - prev_month_revenue) / prev_month_revenue * 100, 2) as mom_growth_pct
-FROM lagged_sales;
+    year, month, revenue,
+    LAG(revenue) OVER (ORDER BY year, month) as prev_revenue,
+    ROUND((revenue - LAG(revenue) OVER (ORDER BY year, month)) / LAG(revenue) OVER (ORDER BY year, month) * 100, 2) as growth_pct
+FROM monthly;
 
--- 3. Top 5 Products by Profit
+-- 3. Top Products (Profitability)
 SELECT 
     p.product_name,
     p.category,
-    SUM(f.profit) as total_profit,
-    SUM(f.sales) as total_sales
+    SUM(f.profit) as total_profit
 FROM fact_sales f
 JOIN dim_product p ON f.product_id = p.product_id
 GROUP BY 1, 2
 ORDER BY total_profit DESC
 LIMIT 5;
 
--- 4. Customer Segmentation (RFM Proxy)
--- Recency (days since last order), Frequency (count orders), Monetary (total sales)
+-- 4. Best Customers (RFM-ish)
 SELECT 
     c.customer_name,
     c.segment,
-    MAX(f.order_date) as last_order_date,
-    COUNT(DISTINCT f.order_id) as frequency,
-    SUM(f.sales) as monetary_value
+    MAX(f.order_date) as last_order,
+    COUNT(DISTINCT f.order_id) as orders,
+    SUM(f.sales) as total_spend
 FROM fact_sales f
 JOIN dim_customer c ON f.customer_id = c.customer_id
 GROUP BY 1, 2
-ORDER BY monetary_value DESC
+ORDER BY total_spend DESC
 LIMIT 10;
 
--- 5. Regional Performance
+-- 5. Region Stats
 SELECT 
     l.region,
-    SUM(f.sales) as total_sales,
-    SUM(f.profit) as total_profit,
-    ROUND(SUM(f.profit) / SUM(f.sales) * 100, 2) as profit_margin_pct
+    SUM(f.sales) as sales,
+    SUM(f.profit) as profit,
+    ROUND(SUM(f.profit) / SUM(f.sales) * 100, 2) as margin
 FROM fact_sales f
 JOIN dim_location l ON f.location_id = l.location_id
 GROUP BY 1
-ORDER BY total_sales DESC;
+ORDER BY sales DESC;
