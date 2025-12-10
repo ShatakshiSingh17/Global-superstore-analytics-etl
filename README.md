@@ -89,3 +89,27 @@ erDiagram
 | EMEA | $806k | $44k |
 
 **Top Regions:** Central ($2.8M), South ($1.6M), North ($1.2M).
+
+## Key Analysis & EDA
+
+We performed an exploratory data analysis to answer critical business questions:
+
+### 1. Market Profitability
+*Which markets are the most lucrative?*
+![Market Profit](docs/images/market_profitability.png)
+**Insight:** APAC and EU are the clear leaders in total profit, while EMEA lags behind.
+
+### 2. Seasonality Trends
+*Is there a seasonal pattern in global sales?*
+![Sales Trend](docs/images/monthly_sales_trend.png)
+**Insight:** Sales show a consistent upward trend with strong peaks in Q4 (Holiday Season) each year.
+
+### 3. Product Performance
+*How do categories compare in Sales vs. Profit?*
+![Category Scatter](docs/images/category_scatter.png)
+**Insight:** 'Technology' products generally yield high sales and high profit (upper right), while some 'Furniture' sub-categories struggle with profitability despite decent volume.
+
+### 4. Feature Correlation
+*What drives profit?*
+![Correlation](docs/images/correlation_matrix.png)
+**Insight:** Sales and Shipping Cost are highly correlated (0.77). Discount has a negative correlation with Profit, indicating that heavy discounting hurts the bottom line.
