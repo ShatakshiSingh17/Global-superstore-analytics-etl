@@ -57,3 +57,14 @@ FROM fact_sales f
 JOIN dim_location l ON f.location_id = l.location_id
 GROUP BY 1
 ORDER BY sales DESC;
+
+-- 6. Sales by Market
+SELECT 
+    l.market,
+    SUM(f.sales) as sales,
+    SUM(f.shipping_cost) as total_shipping_cost,
+    SUM(f.profit) as profit
+FROM fact_sales f
+JOIN dim_location l ON f.location_id = l.location_id
+GROUP BY 1
+ORDER BY sales DESC;

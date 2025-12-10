@@ -4,7 +4,7 @@ End-to-end ETL pipeline and analytics for the Global Superstore dataset. Built w
 
 ## Overview
 
-Takes raw sales data, cleans it, builds a Star Schema (Facts/Dims), and loads it into a local SQLite DB for analysis.
+Takes raw sales data from the [Superstore Dataset (Kaggle)](https://www.kaggle.com/datasets/vivek468/superstore-dataset-final), cleans it, builds a Star Schema (Facts/Dims), and loads it into a local SQLite DB for analysis.
 
 **Stack:** Python, Pandas, SQLite, Parquet.
 

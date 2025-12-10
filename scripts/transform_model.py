@@ -10,7 +10,8 @@ def build_dims(df):
     dim_product = df[['product_id', 'product_name', 'category', 'sub_category']].drop_duplicates().reset_index(drop=True)
     
     # Location Dim (needs surrogate key)
-    dim_location = df[['city', 'state', 'country', 'region']].drop_duplicates().reset_index(drop=True)
+    # Added market
+    dim_location = df[['city', 'state', 'country', 'region', 'market']].drop_duplicates().reset_index(drop=True)
     dim_location['location_id'] = dim_location.index + 1
     
     # Date Dim
@@ -34,12 +35,14 @@ def build_fact(df, dims):
     fact = df.copy()
     
     # join with location to get the ID
-    fact = fact.merge(dims['dim_location'], on=['city', 'state', 'country', 'region'], how='left')
+    # Added market to join keys
+    fact = fact.merge(dims['dim_location'], on=['city', 'state', 'country', 'region', 'market'], how='left')
     
     cols = [
         'order_id', 'order_date', 'ship_date', 'ship_mode',
         'customer_id', 'product_id', 'location_id',
-        'sales', 'quantity', 'discount', 'profit'
+        'sales', 'quantity', 'discount', 'profit',
+        'shipping_cost', 'order_priority'
     ]
     
     return fact[cols]
@@ -49,7 +52,7 @@ if __name__ == "__main__":
     from extract import extract_data
     from transform_clean import clean_data
     
-    df = clean_data(extract_data("../data/raw/Superstore.csv"))
+    df = clean_data(extract_data("../data/raw/Global_Superstore.csv"))
     dims = build_dims(df)
     fact = build_fact(df, dims)
     print(fact.head())

@@ -7,7 +7,8 @@ from load import save_data
 def main():
     # setup paths
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    raw_path = os.path.join(base_dir, "data/raw/Superstore.csv")
+    # Changed to Global_Superstore.csv
+    raw_path = os.path.join(base_dir, "data/raw/Global_Superstore.csv")
     out_dir = os.path.join(base_dir, "data/analytics")
     db_path = os.path.join(out_dir, "retail_db.sqlite")
     

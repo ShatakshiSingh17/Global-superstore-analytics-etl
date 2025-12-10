@@ -20,5 +20,8 @@ def extract_data(filepath):
 
 if __name__ == "__main__":
     # quick test
-    df = extract_data("../data/raw/Superstore.csv")
+    # Ensure data/raw exists
+    os.makedirs("../data/raw", exist_ok=True)
+    # Changed to Global_Superstore.csv
+    df = extract_data("../data/raw/Global_Superstore.csv")
     print(df.head())
