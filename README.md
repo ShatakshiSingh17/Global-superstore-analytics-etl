@@ -78,14 +78,14 @@ erDiagram
 
 ## Analysis Results
 
-**Regional Stats:**
+**Regional Stats (Sales):**
 
-| Region | Sales | Profit | Margin |
-| :--- | :--- | :--- | :--- |
-| West | $725k | $108k | 14.9% |
-| East | $678k | $91k | 13.5% |
-| South | $391k | $46k | 11.9% |
-| Central | $501k | $39k | 7.9% |
+| Market | Sales | Profit |
+| :--- | :--- | :--- |
+| APAC | $3.59M | $436k |
+| EU | $2.94M | $373k |
+| US | $2.30M | $286k |
+| LATAM | $2.16M | $222k |
+| EMEA | $806k | $44k |
 
-**Top Customers:**
-Sean Miller ($25k), Tamara Chand ($19k), Raymond Buch ($15k).
+**Top Regions:** Central ($2.8M), South ($1.6M), North ($1.2M).
