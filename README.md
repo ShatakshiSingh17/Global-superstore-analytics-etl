@@ -92,7 +92,7 @@ erDiagram
 
 ## Key Analysis & EDA
 
-We performed an exploratory data analysis to answer critical business questions:
+On performing exploratory data analysis it answers critical business questions:
 
 ### 1. Market Profitability
 *Which markets are the most lucrative?*
